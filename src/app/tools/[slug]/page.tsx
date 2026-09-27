@@ -27,18 +27,17 @@ export async function generateMetadata(
   if (!toolData) {
     return { title: "Tool Not Found" };
   }
-  const url = `https://textflow.example.com/tools/${(await props.params).slug}`;
   
   return {
     title: toolData.frontmatter.seoTitle,
     description: toolData.frontmatter.metaDesc,
     alternates: {
-      canonical: url,
+      canonical: `/tools/${params.slug}`,
     },
     openGraph: {
       title: toolData.frontmatter.seoTitle,
       description: toolData.frontmatter.metaDesc,
-      url: url,
+      url: `/tools/${params.slug}`,
       type: "website",
     },
   };

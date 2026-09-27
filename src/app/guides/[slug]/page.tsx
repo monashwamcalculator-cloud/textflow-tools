@@ -16,18 +16,17 @@ export async function generateMetadata(
   if (!guideData) {
     return { title: "Guide Not Found" };
   }
-  const url = `https://textflow.example.com/guides/${params.slug}`;
   
   return {
     title: guideData.frontmatter.seoTitle,
     description: guideData.frontmatter.metaDesc,
     alternates: {
-      canonical: url,
+      canonical: `/guides/${params.slug}`,
     },
     openGraph: {
       title: guideData.frontmatter.seoTitle,
       description: guideData.frontmatter.metaDesc,
-      url: url,
+      url: `/guides/${params.slug}`,
       type: "article",
       publishedTime: guideData.frontmatter.publishedAt,
     },

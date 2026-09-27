@@ -6,7 +6,7 @@ export default function ContactPage() {
       
       <h2>Get in Touch</h2>
       <p>For general inquiries, bug reports, or feature requests, please reach out to us via email:</p>
-      <p><strong>Email:</strong> hello@textflow.example.com</p>
+      <p><strong>Email:</strong> hello@yourdomain.com</p>
 
       <h2>Bug Reports</h2>
       <p>If you found an issue with one of our converters (for example, if a specific character isn't converting properly in the Morse Code tool), please include:</p>

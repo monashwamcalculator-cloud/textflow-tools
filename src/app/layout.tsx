@@ -8,6 +8,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
   title: "TextFlow | Free Online Text Utilities & Translators",
   description: "A comprehensive suite of free text tools, slang translators, writing utilities, and code converters.",
 };
