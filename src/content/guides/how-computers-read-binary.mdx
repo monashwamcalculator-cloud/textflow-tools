@@ -1,0 +1,48 @@
+---
+id: "how-computers-read-binary"
+title: "How Computers Read Binary: Understanding the 1s and 0s"
+slug: "how-computers-read-binary"
+categoryId: "developer"
+shortDescription: "A beginner-friendly guide explaining how modern computers use binary code to process everything from text to video games."
+seoTitle: "How Computers Read Binary | Understanding Base-2 Code"
+metaDesc: "What is binary code? Learn exactly how computers use 1s and 0s (Base-2) to store text, images, and software."
+publishedAt: "2026-10-01"
+---
+
+## What is Binary?
+
+At its core, a computer is just a massive collection of microscopic electronic switches called **transistors**. These switches can only be in one of two states: **ON** or **OFF** ([Computer History Museum: The Silicon Engine](https://www.computerhistory.org/siliconengine/)). 
+
+To represent these two states mathematically, we use the numbers **1 (ON)** and **0 (OFF)**. This system of using only two digits is called the **Binary Number System** (or Base-2). Every piece of data on your computer—whether it's a text document, a high-definition movie, or a video game—is ultimately broken down into a massive sequence of 1s and 0s. 
+
+This core concept of encoding complex information into binary states is the digital equivalent of [how early telegraphs used Morse Code's dots and dashes](/guides/history-of-morse-code).
+
+## Bits and Bytes
+
+* **Bit:** A single `1` or `0` is called a "bit" (short for binary digit). It is the smallest unit of data in computing.
+* **Byte:** A group of 8 bits is called a "byte". 
+
+Why 8 bits? Early computer engineers decided that 8 bits provided enough combinations ($2^8 = 256$ possible combinations) to represent every letter of the English alphabet, numbers 0-9, and standard punctuation marks.
+
+## Translating Binary to Text (ASCII)
+
+To ensure different computers could talk to each other, a standard was created in the 1960s called **ASCII** (American Standard Code for Information Interchange). 
+
+ASCII acts as a universal dictionary, assigning a specific 8-bit binary number to every character ([ASCII Code Reference](https://www.ascii-code.com/)):
+* The uppercase letter **A** is assigned the decimal number `65`, which in binary is `01000001`.
+* The lowercase letter **a** is `97`, which is `01100001` in binary.
+
+When you type "Hello" on your keyboard, the computer processor receives the binary sequence:
+`01001000 01100101 01101100 01101100 01101111`
+
+## Beyond Text: Images and Colors
+
+Computers use the exact same 1s and 0s to display images. A computer screen is made of millions of tiny squares called **pixels**. 
+
+Each pixel can display a specific color created by mixing Red, Green, and Blue light (RGB). The computer uses one byte (8 bits) for Red, one byte for Green, and one byte for Blue, allowing for 16.7 million possible color combinations per pixel ([W3C Web Colors Specification](https://www.w3.org/TR/css-color-3/)).
+
+<div className="mt-8 p-6 bg-indigo-50 rounded-xl border border-indigo-100">
+  <h3 className="text-xl font-bold text-indigo-900 mb-2">Translate Binary Yourself</h3>
+  <p className="text-indigo-800 mb-4">Want to read secret messages or write your own binary text? Use our instant binary decoder.</p>
+  <a href="/tools/binary-code" className="inline-block px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors">Go to Binary Converter</a>
+</div>

@@ -1,0 +1,44 @@
+---
+id: "url-encoder"
+name: "URL Encoder / Decoder"
+slug: "url-encoder"
+categoryId: "developer"
+shortDescription: "Encode text into a URL-safe format or decode messy URL strings back to readable text."
+icon: "🔗"
+seoTitle: "URL Encoder & Decoder | Format URL Strings Instantly"
+metaDesc: "Free online URL encoder and decoder. Instantly convert text into a URL-safe string or decode URL strings back to normal text."
+componentName: "UrlEngine"
+---
+## How to Use the URL Encoder
+
+Our URL utility automatically detects what you're trying to do.
+
+1. **Auto-Detect (Default):** Paste your text. If it looks like it contains URL-encoded characters (like `%20` for spaces), the tool will automatically decode it. Otherwise, it will encode your text so it's safe to use in a URL.
+2. **Force Encode:** Select this mode if your text happens to include `%` symbols but you want to encode the entire string.
+3. **Force Decode:** Select this mode to strictly decode the input.
+
+## Why Do URLs Need to be Encoded?
+
+URLs can only be sent over the Internet using the ASCII character set. Because URLs often contain characters outside the ASCII set (or characters that have special meaning in a URL, like `&` or `=`), the URL has to be converted into a valid ASCII format. 
+
+URL encoding replaces unsafe ASCII characters with a `%` followed by two hexadecimal digits.
+
+### Common URL Encoded Characters
+
+| Character | Encoded |
+|-----------|---------|
+| Space | `%20` (or `+`) |
+| `!` | `%21` |
+| `"` | `%22` |
+| `#` | `%23` |
+| `$` | `%24` |
+| `%` | `%25` |
+| `&` | `%26` |
+| `/` | `%2F` |
+| `:` | `%3A` |
+
+## Reserved vs. Unreserved Characters
+
+In a URL, some characters are "reserved" because they have special meaning. For example, the `?` character is used to indicate the start of a query string. If you want to use a `?` as actual data within that query string, you *must* encode it as `%3F`.
+
+"Unreserved" characters (like standard letters `A-Z` and numbers `0-9`) do not need to be encoded.
