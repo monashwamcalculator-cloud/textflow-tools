@@ -98,7 +98,7 @@ export async function POST(req: Request) {
     const prompt = buildTranslationPrompt(activeConfig, textInput);
     
     // Prefer stable production flash model, defaulting to the newest
-    const model = process.env.GEMINI_MODEL || "gemini-1.5-flash";
+    const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
     // 6. Call Gemini API using Official SDK
     const ai = new GoogleGenAI({ apiKey });
