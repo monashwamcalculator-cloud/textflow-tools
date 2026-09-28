@@ -69,9 +69,9 @@ export async function POST(req: Request) {
     }
 
     // 4. Validate API Key
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GeminiAPIKey;
     if (!apiKey) {
-      console.error("GEMINI_API_KEY environment variable is not set.");
+      console.error("API key environment variables are not set.");
       return NextResponse.json(
         { error: "Translation service is currently unavailable (API key missing)." },
         { status: 503 }
