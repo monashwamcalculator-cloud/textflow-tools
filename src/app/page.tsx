@@ -1,6 +1,9 @@
 import Script from "next/script";
 import { Search, ArrowRight, ArrowLeftRight, CheckCircle2, ShieldCheck, Zap, Globe2, BookOpen, Smartphone } from "lucide-react";
 import { MOCK_CATEGORIES, MOCK_POPULAR_TOOLS } from "@/lib/mock-data";
+import { SearchAutocomplete } from "@/components/SearchAutocomplete";
+import { getAllToolConfigs } from "@/lib/tools/registry";
+import { getAllTools as getOldTools } from "@/lib/content";
 
 export default function HomePage() {
   const schema = {
@@ -14,6 +17,24 @@ export default function HomePage() {
       "query-input": "required name=search_term_string"
     }
   };
+
+  const newTools = getAllToolConfigs().map(t => ({
+    name: t.name,
+    slug: t.slug,
+    category: t.category,
+    description: t.shortDescription,
+    url: `/${t.slug}`
+  }));
+
+  const oldTools = getOldTools().map(t => ({
+    name: t.name,
+    slug: t.slug,
+    category: t.categoryId,
+    description: t.shortDescription,
+    url: `/tools/${t.slug}`
+  }));
+
+  const allSearchTools = [...newTools, ...oldTools];
 
   return (
     <div className="flex flex-col w-full">
@@ -30,21 +51,7 @@ export default function HomePage() {
         </p>
         
         {/* Homepage Search */}
-        <div className="w-full max-w-2xl relative group">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <Search className="h-6 w-6 text-[var(--text-muted)] group-focus-within:text-[var(--primary)] transition-colors" />
-          </div>
-          <input 
-            type="text" 
-            className="block w-full pl-12 pr-4 py-4 md:py-5 bg-white dark:bg-[#18181b] border border-[var(--border-color)] rounded-2xl text-lg shadow-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent outline-none transition-all text-[var(--foreground)]" 
-            placeholder="Search for a translator or tool..." 
-          />
-          <div className="absolute inset-y-0 right-2 flex items-center">
-            <button className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white px-6 py-2 md:py-3 rounded-xl font-medium transition-colors">
-              Search
-            </button>
-          </div>
-        </div>
+        <SearchAutocomplete tools={allSearchTools} />
       </section>
 
       {/* Featured Tool UI Mock */}
