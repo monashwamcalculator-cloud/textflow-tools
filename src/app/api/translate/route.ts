@@ -114,12 +114,12 @@ export async function POST(req: Request) {
       } else if (rawMessage.includes("quota") || errStatus === 429) {
          safeErrorMessage = "Translation engine is currently over capacity. Please try again later.";
       } else if (rawMessage.includes("model") || errStatus === 404) {
-         safeErrorMessage = "Translation engine configuration error: Model not found.";
+         safeErrorMessage = `Translation engine configuration error: Model not found. (${rawMessage})`;
       } else {
          safeErrorMessage = `Translation engine encountered an error: ${rawMessage || "Unknown cause"}`;
       }
       
-      return NextResponse.json({ error: safeErrorMessage }, { status: errStatus });
+      return NextResponse.json({ error: safeErrorMessage, details: rawMessage }, { status: errStatus });
     }
     
   } catch (error) {
