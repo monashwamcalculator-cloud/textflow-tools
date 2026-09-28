@@ -102,7 +102,7 @@ export async function POST(req: Request) {
           });
           break; // Success!
         } catch (err: any) {
-          if (attempt < retries && (err?.status === 503 || err?.message?.includes("high demand") || err?.status === 429)) {
+          if (attempt < retries && (err?.status === 503 || err?.message?.includes("high demand"))) {
             attempt++;
             console.warn(`[Attempt ${attempt}] Google API overloaded. Retrying in 1.5s...`);
             await new Promise(resolve => setTimeout(resolve, 1500));
