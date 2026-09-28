@@ -1,0 +1,31 @@
+---
+id: "binary-to-text"
+name: "Binary to Text"
+slug: "binary-to-text"
+categoryId: "encoding-decoding"
+shortDescription: "Decode binary code (0s and 1s) back into readable English text instantly."
+icon: "0️⃣"
+seoTitle: "Binary to Text Translator | Decode Binary Code Online"
+metaDesc: "Translate binary code to text instantly. Our free online binary decoder converts 0s and 1s back into readable characters."
+componentName: "BinaryEngine"
+---
+
+## Decode Binary Code into Text
+
+The **Binary to Text Translator** allows you to convert machine code (sequences of `0`s and `1`s) back into readable alphabetical characters and symbols based on standard ASCII/UTF-8 encoding.
+
+This tool is useful for computer science students, developers debugging encoded payloads, and puzzle solvers decoding hidden messages.
+
+### How does Binary translation work?
+Computers process all data as numbers, specifically base-2 (binary) numbers where every digit is either a 0 or a 1. When translating back to text, every 8 bits (a byte) corresponds to a specific character on the ASCII table. For example, the binary string `01000001` equals the decimal number `65`, which corresponds to the capital letter `A`.
+
+<FAQAccordion items={[
+  {
+    question: "Why do I get gibberish when decoding?",
+    answer: "If your output looks like random symbols, your binary sequence might not be formatted in standard 8-bit ASCII blocks, or it might be raw binary data (like an image file) rather than encoded text."
+  },
+  {
+    question: "Do spaces between binary bytes matter?",
+    answer: "Our translator automatically handles both spaced binary (e.g., 01000001 01000010) and continuous binary strings, so you don't need to worry about formatting."
+  }
+]} />
