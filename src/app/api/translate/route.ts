@@ -89,25 +89,11 @@ export async function POST(req: Request) {
     const ai = new GoogleGenAI({ apiKey });
 
     try {
-      let response;
-      try {
-        response = await ai.models.generateContent({
-          model: primaryModel,
-          contents: prompt,
-          config: { temperature: 0.3, maxOutputTokens: 2048 }
-        });
-      } catch (firstErr: any) {
-        if (firstErr?.status === 503 || firstErr?.status === 404 || firstErr?.message?.includes("high demand") || firstErr?.message?.includes("not found")) {
-          console.warn(`Primary model ${primaryModel} failed (${firstErr.status}). Falling back to ${fallbackModel}...`);
-          response = await ai.models.generateContent({
-            model: fallbackModel,
-            contents: prompt,
-            config: { temperature: 0.3, maxOutputTokens: 2048 }
-          });
-        } else {
-          throw firstErr;
-        }
-      }
+      const response = await ai.models.generateContent({
+        model: primaryModel,
+        contents: prompt,
+        config: { temperature: 0.3, maxOutputTokens: 2048 }
+      });
 
       // 7. Validate & Format Response
       let resultText = response.text || "";
