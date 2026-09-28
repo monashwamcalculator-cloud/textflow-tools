@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getToolConfig } from '@/lib/tools/registry';
 import { buildTranslationPrompt } from '@/lib/tools/prompts';
+import { GoogleGenAI } from '@google/genai';
 
 const MAX_CHARS = 2000;
 const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
@@ -79,43 +80,50 @@ export async function POST(req: Request) {
 
     // 5. Build Prompt
     const prompt = buildTranslationPrompt(activeConfig, textInput);
-    const model = process.env.GEMINI_MODEL || "gemini-1.5-flash";
+    
+    // Prefer stable production flash model, defaulting to the newest
+    const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
-    // 6. Call Gemini API
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [{ text: prompt }]
-          }
-        ],
-        generationConfig: {
+    // 6. Call Gemini API using Official SDK
+    const ai = new GoogleGenAI({ apiKey });
+
+    try {
+      const response = await ai.models.generateContent({
+        model: model,
+        contents: prompt,
+        config: {
           temperature: 0.3,
           maxOutputTokens: 2048,
         }
-      })
-    });
+      });
 
-    if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      console.error("Gemini API Error:", errData);
-      return NextResponse.json({ error: "Translation engine encountered an error." }, { status: 502 });
+      // 7. Validate & Format Response
+      let resultText = response.text || "";
+      return NextResponse.json({ result: resultText.trim() }, { status: 200 });
+
+    } catch (apiError: any) {
+      // Log the full error internally but do NOT expose the API key in the client response
+      console.error("Gemini API Engine Error details:", apiError);
+      
+      let safeErrorMessage = "Translation engine encountered an error.";
+      const errStatus = apiError.status || 502;
+      const rawMessage = apiError.message || "";
+      
+      if (rawMessage.includes("API key not valid")) {
+         safeErrorMessage = "Translation engine configuration error: Invalid API Key.";
+      } else if (rawMessage.includes("quota") || errStatus === 429) {
+         safeErrorMessage = "Translation engine is currently over capacity. Please try again later.";
+      } else if (rawMessage.includes("model") || errStatus === 404) {
+         safeErrorMessage = "Translation engine configuration error: Model not found.";
+      } else {
+         safeErrorMessage = `Translation engine encountered an error: ${rawMessage || "Unknown cause"}`;
+      }
+      
+      return NextResponse.json({ error: safeErrorMessage }, { status: errStatus });
     }
-
-    const data = await response.json();
-    
-    // 7. Validate & Format Response
-    let resultText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-    resultText = resultText.trim();
-
-    return NextResponse.json({ result: resultText }, { status: 200 });
     
   } catch (error) {
-    console.error("Translation API Error:", error);
+    console.error("Translation Endpoint Error:", error);
     return NextResponse.json(
       { error: "An unexpected server error occurred." },
       { status: 500 }
