@@ -82,20 +82,32 @@ export async function POST(req: Request) {
     const prompt = buildTranslationPrompt(activeConfig, textInput);
     
     // Prefer stable production flash model, defaulting to the newest
-    const model = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+    const primaryModel = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+    const fallbackModel = "gemini-2.5-flash";
 
     // 6. Call Gemini API using Official SDK
     const ai = new GoogleGenAI({ apiKey });
 
     try {
-      const response = await ai.models.generateContent({
-        model: model,
-        contents: prompt,
-        config: {
-          temperature: 0.3,
-          maxOutputTokens: 2048,
+      let response;
+      try {
+        response = await ai.models.generateContent({
+          model: primaryModel,
+          contents: prompt,
+          config: { temperature: 0.3, maxOutputTokens: 2048 }
+        });
+      } catch (firstErr: any) {
+        if (firstErr?.status === 503 || firstErr?.status === 404 || firstErr?.message?.includes("high demand") || firstErr?.message?.includes("not found")) {
+          console.warn(`Primary model ${primaryModel} failed (${firstErr.status}). Falling back to ${fallbackModel}...`);
+          response = await ai.models.generateContent({
+            model: fallbackModel,
+            contents: prompt,
+            config: { temperature: 0.3, maxOutputTokens: 2048 }
+          });
+        } else {
+          throw firstErr;
         }
-      });
+      }
 
       // 7. Validate & Format Response
       let resultText = response.text || "";
@@ -109,17 +121,19 @@ export async function POST(req: Request) {
       const errStatus = apiError.status || 502;
       const rawMessage = apiError.message || "";
       
-      if (rawMessage.includes("API key not valid")) {
+      if (rawMessage.includes("API key not valid") || errStatus === 400 || errStatus === 401) {
          safeErrorMessage = "Translation engine configuration error: Invalid API Key.";
       } else if (rawMessage.includes("quota") || errStatus === 429) {
          safeErrorMessage = "Translation engine is currently over capacity. Please try again later.";
-      } else if (rawMessage.includes("model") || errStatus === 404) {
+      } else if (rawMessage.includes("experiencing high demand") || errStatus === 503) {
+         safeErrorMessage = "The Google AI translation engine is currently overloaded and experiencing high demand. Spikes are temporary, please try again in a minute.";
+      } else if (errStatus === 404 || rawMessage.includes("is not found")) {
          safeErrorMessage = `Translation engine configuration error: Model not found. (${rawMessage})`;
       } else {
          safeErrorMessage = `Translation engine encountered an error: ${rawMessage || "Unknown cause"}`;
       }
       
-      return NextResponse.json({ error: safeErrorMessage, rawMessage }, { status: errStatus });
+      return NextResponse.json({ error: safeErrorMessage }, { status: errStatus });
     }
     
   } catch (error) {
