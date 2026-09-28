@@ -89,11 +89,28 @@ export async function POST(req: Request) {
     const ai = new GoogleGenAI({ apiKey });
 
     try {
-      const response = await ai.models.generateContent({
-        model: primaryModel,
-        contents: prompt,
-        config: { temperature: 0.3, maxOutputTokens: 2048 }
-      });
+      let response;
+      let retries = 2;
+      let attempt = 0;
+      
+      while (attempt <= retries) {
+        try {
+          response = await ai.models.generateContent({
+            model: primaryModel,
+            contents: prompt,
+            config: { temperature: 0.3, maxOutputTokens: 2048 }
+          });
+          break; // Success!
+        } catch (err: any) {
+          if (attempt < retries && (err?.status === 503 || err?.message?.includes("high demand") || err?.status === 429)) {
+            attempt++;
+            console.warn(`[Attempt ${attempt}] Google API overloaded. Retrying in 1.5s...`);
+            await new Promise(resolve => setTimeout(resolve, 1500));
+          } else {
+            throw err;
+          }
+        }
+      }
 
       // 7. Validate & Format Response
       let resultText = response.text || "";
