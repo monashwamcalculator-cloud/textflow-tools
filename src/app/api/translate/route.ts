@@ -111,6 +111,10 @@ export async function POST(req: Request) {
           }
         }
       }
+      
+      if (!response) {
+         throw new Error("Failed to generate translation after multiple retries.");
+      }
 
       // 7. Validate & Format Response
       let resultText = response.text || "";
