@@ -3,6 +3,22 @@ import { getToolConfig } from '@/lib/tools/registry';
 import { buildTranslationPrompt } from '@/lib/tools/prompts';
 import { GoogleGenAI } from '@google/genai';
 
+export async function GET() {
+  const apiKey = process.env.GEMINI_API_KEY || process.env.GeminiAPIKey;
+  if (!apiKey) return NextResponse.json({ error: "No API Key" }, { status: 400 });
+  try {
+    const ai = new GoogleGenAI({ apiKey });
+    const modelsInfo = await ai.models.list();
+    const modelNames = [];
+    for await (const m of modelsInfo) {
+      modelNames.push(m.name);
+    }
+    return NextResponse.json({ models: modelNames });
+  } catch (e: any) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
+  }
+}
+
 const MAX_CHARS = 2000;
 const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
 const MAX_REQUESTS_PER_WINDOW = 10;
