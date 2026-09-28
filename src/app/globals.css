@@ -3,19 +3,25 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #fcfcfd;
-  --foreground: #171717;
-  --border-color: #e5e7eb;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --border-color: #e2e8f0;
   --card-bg: #ffffff;
-  --input-bg: #f9fafb;
+  --input-bg: #f1f5f9;
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --text-muted: #475569;
 }
 
 .dark {
-  --background: #0f111a;
-  --foreground: #f3f4f6;
-  --border-color: #1f2937;
-  --card-bg: #111827;
-  --input-bg: #1f2937;
+  --background: #09090b;
+  --foreground: #f8fafc;
+  --border-color: #27272a;
+  --card-bg: #18181b;
+  --input-bg: #27272a;
+  --primary: #6366f1;
+  --primary-hover: #818cf8;
+  --text-muted: #a1a1aa;
 }
 
 @theme inline {
