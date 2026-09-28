@@ -3,22 +3,6 @@ import { getToolConfig } from '@/lib/tools/registry';
 import { buildTranslationPrompt } from '@/lib/tools/prompts';
 import { GoogleGenAI } from '@google/genai';
 
-export async function GET() {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.GeminiAPIKey;
-  if (!apiKey) return NextResponse.json({ error: "No API Key" }, { status: 400 });
-  try {
-    const ai = new GoogleGenAI({ apiKey });
-    const modelsInfo = await ai.models.list();
-    const modelNames = [];
-    for await (const m of modelsInfo) {
-      modelNames.push(m.name);
-    }
-    return NextResponse.json({ models: modelNames });
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
-  }
-}
-
 const MAX_CHARS = 2000;
 const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
 const MAX_REQUESTS_PER_WINDOW = 10;
@@ -98,7 +82,7 @@ export async function POST(req: Request) {
     const prompt = buildTranslationPrompt(activeConfig, textInput);
     
     // Prefer stable production flash model, defaulting to the newest
-    const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+    const model = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 
     // 6. Call Gemini API using Official SDK
     const ai = new GoogleGenAI({ apiKey });
@@ -130,12 +114,12 @@ export async function POST(req: Request) {
       } else if (rawMessage.includes("quota") || errStatus === 429) {
          safeErrorMessage = "Translation engine is currently over capacity. Please try again later.";
       } else if (rawMessage.includes("model") || errStatus === 404) {
-         safeErrorMessage = `Translation engine configuration error: Model not found. (${rawMessage})`;
+         safeErrorMessage = "Translation engine configuration error: Model not found.";
       } else {
          safeErrorMessage = `Translation engine encountered an error: ${rawMessage || "Unknown cause"}`;
       }
       
-      return NextResponse.json({ error: safeErrorMessage, details: rawMessage }, { status: errStatus });
+      return NextResponse.json({ error: safeErrorMessage }, { status: errStatus });
     }
     
   } catch (error) {
